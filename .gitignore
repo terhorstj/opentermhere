@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+._*
+
+# Claude Code local files
+.claude/
+
+# Custom-icon resource files inside app bundles (Finder-generated, not portable)
+Icon?
+
+# Build output
+build/
+
+# Obsolete Intel-only original (kept locally for reference only)
+Open Terminal Here.app/
