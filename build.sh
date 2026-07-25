@@ -5,10 +5,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-ICON="src/icon.icns"
-
 build_app() {
-  local APP="$1" SRC="$2" BUNDLE_ID="$3" NAME="$4"
+  local APP="$1" SRC="$2" BUNDLE_ID="$3" NAME="$4" ICON="$5"
 
   echo "==> Compiling $SRC"
   rm -rf "$APP"
@@ -37,10 +35,10 @@ build_app() {
 }
 
 build_app "Open Terminal Here (Universal).app" "src/OpenTerminalHere.applescript" \
-  com.local.openterminalhere "Open Terminal Here"
+  com.local.openterminalhere "Open Terminal Here" "src/icon.icns"
 
 build_app "Open iTerm2 Here (Universal).app" "src/OpenITerm2Here.applescript" \
-  com.local.openiterm2here "Open iTerm2 Here"
+  com.local.openiterm2here "Open iTerm2 Here" "src/icon-iterm2.icns"
 
 echo
 echo "Tip: if Finder shows a generic icon due to caching, run:"

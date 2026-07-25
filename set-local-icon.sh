@@ -5,10 +5,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-ICON="src/icon.icns"
-
-for APP in "Open Terminal Here (Universal).app" "Open iTerm2 Here (Universal).app"; do
-  [ -d "$APP" ] || continue
+apply_icon() {
+  local APP="$1" ICON="$2"
+  [ -d "$APP" ] || return 0
   osascript - "$PWD/$ICON" "$PWD/$APP" <<'OSA'
 use framework "Foundation"
 use framework "AppKit"
@@ -18,4 +17,7 @@ on run argv
 end run
 OSA
   echo "Local Finder icon applied to $APP"
-done
+}
+
+apply_icon "Open Terminal Here (Universal).app" "src/icon.icns"
+apply_icon "Open iTerm2 Here (Universal).app" "src/icon-iterm2.icns"

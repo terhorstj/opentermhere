@@ -55,4 +55,6 @@ AppleScript compiler needs its scripting dictionary).
 
 GPL-3.0 — see [LICENSE](LICENSE).
 
-The application icon is from the original *cd to* project.
+The application icon is from the original *cd to* project. The iTerm2 variant's
+icon is derived from it by [`src/make_iterm_icon.swift`](src/make_iterm_icon.swift),
+which swaps the white `>_` for an iTerm2-style green `$` and block cursor.
