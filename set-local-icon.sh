@@ -1,14 +1,15 @@
 #!/bin/bash
-# Optional: force Finder to show the app's icon immediately on THIS machine.
+# Optional: force Finder to show the apps' icon immediately on THIS machine.
 # Writes a custom-icon Finder resource (metadata only, not committed to git).
 # Not needed on a fresh download — the bundle icon shows on its own there.
 set -euo pipefail
 cd "$(dirname "$0")"
 
-APP="Open Terminal Here (Universal).app"
 ICON="src/icon.icns"
 
-osascript - "$PWD/$ICON" "$PWD/$APP" <<'OSA'
+for APP in "Open Terminal Here (Universal).app" "Open iTerm2 Here (Universal).app"; do
+  [ -d "$APP" ] || continue
+  osascript - "$PWD/$ICON" "$PWD/$APP" <<'OSA'
 use framework "Foundation"
 use framework "AppKit"
 on run argv
@@ -16,4 +17,5 @@ on run argv
 	current application's NSWorkspace's sharedWorkspace()'s setIcon:img forFile:(item 2 of argv) options:0
 end run
 OSA
-echo "Local Finder icon applied to $APP"
+  echo "Local Finder icon applied to $APP"
+done

@@ -3,6 +3,12 @@
 A tiny macOS utility you pin to the **Finder toolbar**. Click it and a Terminal
 window opens, already `cd`'d into the folder you're currently viewing in Finder.
 
+Two variants are included:
+
+- **`Open Terminal Here (Universal).app`** — opens the standard macOS **Terminal**.
+- **`Open iTerm2 Here (Universal).app`** — opens **[iTerm2](https://iterm2.com)**
+  (a new window with your default profile). Requires iTerm2 to be installed.
+
 It's a modern, native replacement for the classic
 [**cd to**](https://github.com/jbtule/cdto) utility, which was an Intel-only
 (x86_64) binary. As Apple winds down Rosetta 2, those old builds show a *"not
@@ -13,30 +19,37 @@ and never depends on Rosetta.
 ## Install
 
 1. Download / clone this repo.
-2. Build the app (or use the prebuilt one in the repo):
+2. Build the apps (or use the prebuilt ones in the repo):
    ```sh
    ./build.sh
    ```
-3. Move **`Open Terminal Here (Universal).app`** to `/Applications`.
+3. Move the variant you want (or both) to `/Applications`.
 4. First launch: right-click the app → **Open** (it's ad-hoc signed, so Gatekeeper
-   asks once). Grant the **Automation** permission it requests for Finder and Terminal.
+   asks once). Grant the **Automation** permission it requests for Finder and
+   Terminal (or iTerm2).
 5. Pin it to the toolbar: open a Finder window, then **⌘-drag** the app onto the toolbar.
 
 ## Usage
 
-Click the toolbar icon while viewing any folder → Terminal opens there. If no
-Finder window is open, it falls back to your Desktop.
+Click the toolbar icon while viewing any folder → your terminal opens there. If
+no Finder window is open, it falls back to your Desktop.
 
 ## Build from source
 
-The app is generated from [`src/OpenTerminalHere.applescript`](src/OpenTerminalHere.applescript)
-by [`build.sh`](build.sh), which compiles it, sets the icon, and ad-hoc signs it.
+The apps are generated from
+[`src/OpenTerminalHere.applescript`](src/OpenTerminalHere.applescript) and
+[`src/OpenITerm2Here.applescript`](src/OpenITerm2Here.applescript) by
+[`build.sh`](build.sh), which compiles them, sets the icon, and ad-hoc signs
+them. Building the iTerm2 variant requires iTerm2 to be installed (the
+AppleScript compiler needs its scripting dictionary).
 
 ## Customizing
 
-- **iTerm2 instead of Terminal:** change the `tell application "Terminal"` block
-  in the source to target iTerm, then rebuild.
-- **New tab instead of new window:** adjust the `do script` call.
+- **Another terminal emulator:** copy one of the sources, change the
+  `tell application` block to target it, and add a `build_app` line in
+  `build.sh`.
+- **New tab instead of new window:** adjust the `do script` call (Terminal) or
+  the `create window with default profile` call (iTerm2).
 
 ## License
 
