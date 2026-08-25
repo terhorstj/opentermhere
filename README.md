@@ -31,8 +31,15 @@ and never depends on Rosetta.
 
 ## Usage
 
-Click the toolbar icon while viewing any folder → your terminal opens there. If
-no Finder window is open, it falls back to your Desktop.
+Click the toolbar icon while viewing any folder → your terminal opens there.
+
+Like the classic *cd to*, the **selection takes priority** over the folder being
+viewed: with a file selected, the terminal opens in the folder *containing that
+file* — handy in list view, where a selected file can sit inside an expanded
+subfolder deeper than the folder you're viewing. A selected folder opens that
+folder itself, and a selected alias resolves to its original item first. With
+nothing selected, the front window's folder is used; with no Finder window
+open, it falls back to your Desktop.
 
 ## Build from source
 
