@@ -41,5 +41,5 @@ build_app "Open iTerm2 Here (Universal).app" "src/OpenITerm2Here.applescript" \
   com.local.openiterm2here "Open iTerm2 Here" "src/icon-iterm2.icns"
 
 echo
-echo "Tip: if Finder shows a generic icon due to caching, run:"
-echo "     ./set-local-icon.sh"
+echo "==> Applying local Finder icons"
+./set-local-icon.sh
