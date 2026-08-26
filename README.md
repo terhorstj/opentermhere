@@ -50,6 +50,29 @@ The apps are generated from
 them. Building the iTerm2 variant requires iTerm2 to be installed (the
 AppleScript compiler needs its scripting dictionary).
 
+## Playing nice with a tmux auto-attach
+
+If your `~/.zshrc` auto-attaches tmux in interactive shells, the `cd` these
+apps send would land inside the tmux session instead of a fresh shell. To
+support that setup, each app touches a flag file
+(`/tmp/opentermhere-skip-tmux-$USER`) just before opening the window. Your
+zshrc can check for a fresh flag and skip the auto-attach once:
+
+```zsh
+if [[ $- == *i* && -z $TMUX ]] && command -v tmux >/dev/null; then
+  _oth_flag="/tmp/opentermhere-skip-tmux-$USER"
+  if [[ -f $_oth_flag ]] && (( $(date +%s) - $(stat -f %m "$_oth_flag") < 15 )); then
+    rm -f "$_oth_flag"   # toolbar-app window: plain shell, consume the flag
+  else
+    tmux attach -t main 2>/dev/null || exec tmux new -s main
+  fi
+  unset _oth_flag
+fi
+```
+
+The flag is harmless if your zshrc ignores it (it just sits in `/tmp`), and the
+15-second freshness check means a stale flag can't suppress a later attach.
+
 ## Customizing
 
 - **Another terminal emulator:** copy one of the sources, change the

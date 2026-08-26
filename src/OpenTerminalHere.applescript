@@ -41,6 +41,10 @@ on run
 		set targetPath to (POSIX path of (path to desktop folder))
 	end if
 
+	-- Drop a short-lived flag so a tmux auto-attach in the user's zshrc can
+	-- skip itself for this window (see README); harmless if zshrc ignores it.
+	do shell script "touch \"/tmp/opentermhere-skip-tmux-$USER\""
+
 	tell application "Terminal"
 		activate
 		do script "cd " & quoted form of targetPath
