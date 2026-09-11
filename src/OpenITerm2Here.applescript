@@ -41,13 +41,16 @@ on run
 		set targetPath to (POSIX path of (path to desktop folder))
 	end if
 
-	-- Drop a short-lived flag so a tmux auto-attach in the user's zshrc can
-	-- skip itself for this window (see README); harmless if zshrc ignores it.
-	do shell script "touch \"/tmp/opentermhere-skip-tmux-$USER\""
+	-- Launch our window's login shell with OPENTERMHERE=1 in its environment
+	-- so a tmux auto-attach in the user's zshrc can skip itself (see README).
+	-- Unlike a flag file, this can't be raced by iTerm's own startup window
+	-- when iTerm is cold-launched by this click.
+	set userName to short user name of (system info)
 
 	tell application "iTerm"
 		activate
-		set newWindow to (create window with default profile)
+		set newWindow to (create window with default profile command ¬
+			"/usr/bin/env OPENTERMHERE=1 /usr/bin/login -fp " & userName)
 		tell current session of newWindow
 			write text "cd " & quoted form of targetPath
 		end tell

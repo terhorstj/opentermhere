@@ -41,6 +41,21 @@ on run
 		set targetPath to (POSIX path of (path to desktop folder))
 	end if
 
+	-- If Terminal isn't running yet, launch it and let its startup window's
+	-- shell finish init (including any tmux auto-attach) BEFORE dropping the
+	-- flag below — otherwise that shell races ours for the flag, wins, and
+	-- the cd window ends up inside tmux instead of a plain shell.
+	if application "Terminal" is not running then
+		tell application "Terminal" to activate
+		repeat 25 times
+			tell application "Terminal"
+				if (count of windows) > 0 then exit repeat
+			end tell
+			delay 0.2
+		end repeat
+		delay 0.5
+	end if
+
 	-- Drop a short-lived flag so a tmux auto-attach in the user's zshrc can
 	-- skip itself for this window (see README); harmless if zshrc ignores it.
 	do shell script "touch \"/tmp/opentermhere-skip-tmux-$USER\""

@@ -53,13 +53,27 @@ AppleScript compiler needs its scripting dictionary).
 ## Playing nice with a tmux auto-attach
 
 If your `~/.zshrc` auto-attaches tmux in interactive shells, the `cd` these
-apps send would land inside the tmux session instead of a fresh shell. To
-support that setup, each app touches a flag file
-(`/tmp/opentermhere-skip-tmux-$USER`) just before opening the window. Your
-zshrc can check for a fresh flag and skip the auto-attach once:
+apps send would land inside the tmux session instead of a fresh shell. The two
+variants signal your zshrc differently:
+
+- **iTerm2 variant:** launches its window's login shell with `OPENTERMHERE=1`
+  in the environment (via the profile's command). This is race-free even when
+  the click cold-starts iTerm2 and its own startup window's shell is
+  initializing at the same time.
+- **Terminal variant:** Terminal's `do script` can't inject environment, so
+  the app touches a flag file (`/tmp/opentermhere-skip-tmux-$USER`) just
+  before opening the window, and your zshrc consumes it. If Terminal isn't
+  running yet, the app launches it and waits for the startup window's shell
+  to finish initializing first, so that shell can't steal the flag.
+
+A zshrc block that supports both — and only auto-attaches in a real terminal
+window or ssh login, so embedded shells spawned by other apps (IDEs, AI
+assistants, …) don't pile up as tiny tmux clients that shrink the session:
 
 ```zsh
-if [[ $- == *i* && -z $TMUX ]] && command -v tmux >/dev/null; then
+if [[ $- == *i* && -z $TMUX && -z $OPENTERMHERE ]] \
+    && [[ -n $SSH_CONNECTION || $TERM_PROGRAM == "Apple_Terminal" || $TERM_PROGRAM == "iTerm.app" ]] \
+    && command -v tmux >/dev/null; then
   _oth_flag="/tmp/opentermhere-skip-tmux-$USER"
   if [[ -f $_oth_flag ]] && (( $(date +%s) - $(stat -f %m "$_oth_flag") < 15 )); then
     rm -f "$_oth_flag"   # toolbar-app window: plain shell, consume the flag
@@ -70,8 +84,8 @@ if [[ $- == *i* && -z $TMUX ]] && command -v tmux >/dev/null; then
 fi
 ```
 
-The flag is harmless if your zshrc ignores it (it just sits in `/tmp`), and the
-15-second freshness check means a stale flag can't suppress a later attach.
+Both signals are harmless if your zshrc ignores them, and the flag's 15-second
+freshness check means a stale flag can't suppress a later attach.
 
 ## Customizing
 
